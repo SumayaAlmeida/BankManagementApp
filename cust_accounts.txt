@@ -1,0 +1,6 @@
+Maria|Walsh|2345653ww|deposit|False|292.75
+Bill|Murray|1902765ty|current|True|630.67
+Sophia|Loren|1834549pp|current|True|1550.00
+Sumaya|Almeida|218734qa|current|False|1000.00
+Alvaro|Almeida|2236771wa|deposit|False|200.00
+Louise|Markey|1856763io|deposit|y|600.00
