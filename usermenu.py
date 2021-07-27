@@ -4,6 +4,7 @@ import sys
 from customer_account import CustomerAccount
 from file_parser import FileParser
 
+
 class UserMenu():
 
     def clearscreen(self):
@@ -127,8 +128,8 @@ class UserMenu():
 
     def display_all_accounts(self, ds):
         self.clearscreen()
-        print("Account No.     Forename     Surname      PPSN        Account_Type      Overdraft      Balance")
-        print("=================================================================================================")
+        print("Account No.     Forename     Surname      PPSN        Account_Type      Overdraft      Interest Rate     Balance")
+        print("================================================================================================================")
 
         for customer_account in ds.customer_accounts_list:
             print(repr(customer_account))
@@ -196,6 +197,7 @@ class UserMenu():
                         balance = float(input("Enter initial Deposit: "))
 
             customer_account = CustomerAccount(forename, surname, ppsn, account_type, overdraft, balance)
+            customer_account.update_interest_rate(customer_account, balance)
 
             ds.add_customer(customer_account)
 
@@ -313,6 +315,7 @@ class UserMenu():
     def deposit(self, customer_account, amount):
         
         customer_account.balance += amount
+        customer_account.update_interest_rate(customer_account, amount)
         print(" ")
         print(f"Deposit of €{amount} in now added to account {customer_account.account_number} balance.")
         print(f"New balance is: €{customer_account.balance}")
@@ -325,6 +328,7 @@ class UserMenu():
         if customer_account.overdraft == True:
             if amount <= 400.00:
                 customer_account.balance -= amount
+                customer_account.update_interest_rate(customer_account, amount)
                 print(" ")
                 print("Withdrawal authorized. You can release the money now")
                 print(f"New balance is: €{customer_account.balance}")
@@ -339,6 +343,7 @@ class UserMenu():
         else:
             if amount <= customer_account.balance and amount <=400:
                 customer_account.balance -= amount
+                customer_account.update_interest_rate(customer_account, amount)
                 print(" ")
                 print("Withdrawal authorized. You can release the money now")
                 print(f"New balance is: €{customer_account.balance}")
@@ -355,7 +360,9 @@ class UserMenu():
 
         if account_from.overdraft == True:
             account_from.balance -= amount
+            account_from.update_interest_rate(account_from, amount)
             account_to.balance += amount
+            account_to.update_interest_rate(account_to, amount)
             print(" ")
             print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
             print(f"New balance for account {account_from.account_number}: €{account_from.balance}")
@@ -365,7 +372,9 @@ class UserMenu():
         else:
             if amount < account_from.balance:
                 account_from.balance -= amount
+                account_from.update_interest_rate(account_from, amount)
                 account_to.balance += amount
+                account_to.update_interest_rate(account_to, amount)
                 print(" ")
                 print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
                 print(f"New balance for account {account_from.account_number}: €{account_from.balance}")

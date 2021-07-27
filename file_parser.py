@@ -37,8 +37,9 @@ class FileParser():
         overdraft = fields[4]
         balance = float(fields[5])
 
-     
-        return CustomerAccount(forename, surname, ppsn, account_type, overdraft, balance)
+        account = CustomerAccount(forename, surname, ppsn, account_type, overdraft, balance)
+        account.update_interest_rate(account, balance)
+        return account
     
 
     def write_customer_account(self, filename, customer_accounts_list):

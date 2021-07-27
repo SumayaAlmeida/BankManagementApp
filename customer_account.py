@@ -3,7 +3,7 @@ class CustomerAccount:
     next_account_number = 10203000
 
     #contructor
-    def __init__(self, forename, surname, ppsn, account_type, overdraft, balance):
+    def __init__(self, forename, surname, ppsn, account_type, overdraft, balance, interest_rate = 0.02):
 
         self._account_number = str(CustomerAccount.next_account_number)
         CustomerAccount.next_account_number = CustomerAccount.next_account_number + 1
@@ -14,11 +14,14 @@ class CustomerAccount:
         self._account_type = account_type
         self._overdraft = overdraft
         self._balance = float(balance)
+        self._interest_rate = interest_rate
+             
+
         
     
     def __repr__(self):
             repr = f"{str(self.account_number).ljust(15)} {self.forename.ljust(12)} {self.surname.ljust(12)} {self.ppsn.ljust(13)} "
-            repr = repr + f"{self.account_type.ljust(15)} {self.overdraft.ljust(15)} {self.balance:.2f}  "
+            repr = repr + f"{self.account_type.ljust(15)} {self.overdraft.ljust(18)} {str(self.interest_rate).ljust(13)} {self.balance:.2f}  "
             return repr
 
     def file_text(self):
@@ -76,3 +79,20 @@ class CustomerAccount:
     @balance.setter
     def balance(self, new_balance):
         self._balance = new_balance
+    
+    @property
+    def interest_rate(self):
+        return self._interest_rate
+
+    @interest_rate.setter
+    def interest_rate(self, new_interest_rate):
+        self._interest_rate = new_interest_rate
+
+    
+    def update_interest_rate(self, account, balance):
+        if account.balance > 10000:
+            account.interest_rate = 0.05
+        else:
+            account.interest_rate = 0.02
+            return account.interest_rate
+        
