@@ -314,7 +314,8 @@ class UserMenu():
         
         customer_account.balance += amount
         print(" ")
-        print(f"Deposit of {amount} in now added to account {customer_account.account_number} balance.")
+        print(f"Deposit of €{amount} in now added to account {customer_account.account_number} balance.")
+        print(f"New balance is: €{customer_account.balance}")
         print("------------------------")
         input("Return to continue...")
         
@@ -326,6 +327,7 @@ class UserMenu():
                 customer_account.balance -= amount
                 print(" ")
                 print("Withdrawal authorized. You can release the money now")
+                print(f"New balance is: €{customer_account.balance}")
                 print("------------------------")
                 input("Return to continue...")
             else:
@@ -339,6 +341,7 @@ class UserMenu():
                 customer_account.balance -= amount
                 print(" ")
                 print("Withdrawal authorized. You can release the money now")
+                print(f"New balance is: €{customer_account.balance}")
                 print("------------------------")
                 input("Return to continue...")
             
@@ -355,6 +358,8 @@ class UserMenu():
             account_to.balance += amount
             print(" ")
             print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
+            print(f"New balance for account {account_from.account_number}: €{account_from.balance}")
+            print(f"New balance for account {account_to.account_number}: €{account_to.balance}")
             print("------------------------")
             input("Return to continue...")
         else:
@@ -363,6 +368,8 @@ class UserMenu():
                 account_to.balance += amount
                 print(" ")
                 print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
+                print(f"New balance for account {account_from.account_number}: €{account_from.balance}")
+                print(f"New balance for account {account_to.account_number}: €{account_to.balance}")
                 print("------------------------")
                 input("Return to continue...")
             else:
