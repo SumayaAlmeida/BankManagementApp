@@ -1,3 +1,8 @@
+#sumaya ferreira de almeida
+#OOP - assessment - Bank Management App
+#due date: 02/08/2021
+
+
 from datastore import Datastore 
 from usermenu import UserMenu 
 
