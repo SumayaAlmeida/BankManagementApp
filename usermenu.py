@@ -151,14 +151,14 @@ class UserMenu():
                 accounts_found.append(customer_account)
 
         if len(accounts_found) == 0:
-            self.clearscreen()
             print(f"No accounts found for the given PPSN: {ppsn}")
             print("Return to continue...")
             input() 
 
         else:
             self.clearscreen()
-            print("==================================================================================")
+            print("View accounts for:")
+            print("")
             print(f"PPSN: {ppsn}")
             print(f"Name: {accounts_found[0].forename} {accounts_found[0].surname}")
             print("Account No       Account type       Overdraft      Interest Rate        Balance")
@@ -410,7 +410,7 @@ class UserMenu():
         customer_account.balance += amount
         customer_account.update_interest_rate(customer_account, amount)
         print(" ")
-        print(f"Deposit of €{amount} in now added to account {customer_account.account_number} balance.")
+        print(f"Deposit of €{amount:.2f} in now added to account {customer_account.account_number} balance.")
         print(f"New balance is: €{round(customer_account.balance, 2)}")
         print("------------------------")
         input("Return to continue...")
@@ -452,7 +452,7 @@ class UserMenu():
             account_to.balance += amount
             account_to.update_interest_rate(account_to, amount)
             print(" ")
-            print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
+            print(f"Transfer of {amount:.2f} from account {account_from.account_number} to {account_to.account_number} completed.")
             print(f"New balance for account {account_from.account_number}: €{round(account_from.balance, 2)}")
             print(f"New balance for account {account_to.account_number}: €{round(account_to.balance, 2)}")
             print("------------------------")
@@ -464,7 +464,7 @@ class UserMenu():
                 account_to.balance += amount
                 account_to.update_interest_rate(account_to, amount)
                 print(" ")
-                print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
+                print(f"Transfer of {amount:.2f} from account {account_from.account_number} to {account_to.account_number} completed.")
                 print(f"New balance for account {account_from.account_number}: €{round(account_from.balance, 2)}")
                 print(f"New balance for account {account_to.account_number}: €{round(account_to.balance, 2)}")
                 print("------------------------")
