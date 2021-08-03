@@ -270,7 +270,7 @@ class UserMenu():
         customer_account.update_interest_rate(customer_account, balance)
 
         ds.add_customer(customer_account)
-        print(f"Account {customer_account.account_number} sucessefully created")
+        print(f"Account {customer_account.account_number} sucessfully created")
         print("Return to continue...")
         input()
 
@@ -327,7 +327,7 @@ class UserMenu():
             print(account)
             print(" ")
             print("Return to go back to main menu...")
-            input()
+            #input()
             return account
         else:
             return account
