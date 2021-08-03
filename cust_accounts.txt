@@ -1,8 +1,11 @@
-Maria|Walsh|2345653ww|deposit|False|441.97
+Maria|Walsh|2345653ww|deposit|False|250.51
 Bill|Murray|1902765ty|current|True|15640.67
 Sophia|Loren|1834549pp|current|True|1550.00
 Sumaya|Almeida|218734qa|current|False|1050.78
-Alvaro|Almeida|2236771wa|deposit|False|200.00
+Alvaro|Almeida|2236771wa|deposit|False|17855.20
 Matilde|Santos|2034567wa|current|True|100000.87
 Matilde|Santos|1243567oo|deposit|False|500.00
 Marly|Santos|3456789po|current|True|12000.00
+Test|User|1234567qq|current|True|15000.45
+Test|User|1234567qq|deposit|False|50.00
+Test|User|1234567qq|deposit|False|150.00

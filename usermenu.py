@@ -56,7 +56,7 @@ class UserMenu():
         print("2. Deposit")
         print("3. Withdrawal")
         print("4. View all Accounts")
-        print("5. View Specific Account")
+        print("5. Search account by PPSN")
         print("6. Transference Between Accounts")
         print("7. Help")
         print("8. Exit\n")
@@ -98,9 +98,9 @@ class UserMenu():
         
         elif(selection == "5"):
             print("=====================================")
-            print("Option 5. Search for account ")
+            print("Option 5. Search account by PPSN ")
             print("=====================================")
-            self.display_specific_account(ds)
+            self.display_account_by_ppsn(ds)
 
         elif(selection == "6"):
             print("=====================================")
@@ -127,15 +127,51 @@ class UserMenu():
         return selection
 
     def display_all_accounts(self, ds):
-        self.clearscreen()
-        print("Account No.     Forename     Surname      PPSN        Account_Type      Overdraft      Interest Rate     Balance")
-        print("================================================================================================================")
+        
+        print("Forename        Surname        Account No    Interest Rate      Balance")
+        print("========================================================================")
 
         for customer_account in ds.customer_accounts_list:
-            print(repr(customer_account))
+            display_accounts = f"{customer_account.forename.ljust(15)} {customer_account.surname.ljust(15)} {customer_account.account_number.ljust(15)} "
+            display_accounts = display_accounts + f"{str(customer_account.interest_rate).ljust(15)}{customer_account.balance:.2f}"
+            print(display_accounts)
 
         print("Return to continue...")
         input()        
+
+
+    def display_account_by_ppsn(self, ds):
+
+        print("")
+        accounts_found = []
+        ppsn = self.validate_ppsn(input("Enter the PPSN: "))
+        #search for accounts with specific ppsn and append to a list    
+        for customer_account in ds.customer_accounts_list:
+            if customer_account.ppsn == ppsn:
+                accounts_found.append(customer_account)
+
+        if len(accounts_found) == 0:
+            self.clearscreen()
+            print(f"No accounts found for the given PPSN: {ppsn}")
+            print("Return to continue...")
+            input() 
+
+        else:
+            self.clearscreen()
+            print("==================================================================================")
+            print(f"PPSN: {ppsn}")
+            print(f"Name: {accounts_found[0].forename} {accounts_found[0].surname}")
+            print("Account No       Account type       Overdraft      Interest Rate        Balance")
+            print("================================================================================")
+            for account in accounts_found:
+                display_accounts = f"{account.account_number.ljust(18)} {account.account_type.ljust(18)} {account.overdraft.ljust(18)} "
+                display_accounts = display_accounts + f"{str(account.interest_rate).ljust(15)} {account.balance:.2f}"
+                print(display_accounts)
+
+        print("Return to continue...")
+        input()     
+            
+
 
     def account_type_menu(self):
         selection = "0"
@@ -159,53 +195,86 @@ class UserMenu():
 
 
     def create_customer_account(self, ds):
+        forename = ""
+        surname = ""
         balance = False
-        forename = self.validate_name(input("Forename: "))
-        surname = self.validate_name(input("Surname: "))
+        ppsn_found = []
         ppsn = self.validate_ppsn(input("Enter the PPSN: "))
         if ppsn == "Entered PPSN is not valid":
             print(ppsn)
             print("Return to continue...")
             input()
+        else: 
+            for account in ds.customer_accounts_list:
+                if account.ppsn == ppsn:
+                    print(f"PPSN found. Name: {account.forename} {account.surname}")
+                    forename = account.forename
+                    surname = account.surname
+                    ppsn_found.append(account)
+            if len(ppsn_found) == 0:       
+                forename = self.validate_name(input("Forename: "))
+                surname = self.validate_name(input("Surname: "))
+            else: 
+                forename = ppsn_found[0].forename
+                surname = ppsn_found[0].surname           
+
+        account_type = self.account_type_menu()
+        if account_type == "deposit":
+            overdraft = "False"
+            while balance == False:
+                try:
+                    balance = input("Enter initial Deposit: ")
+                    balance = balance.replace(",", ".")
+                    balance = float(balance)
+                    
+                except:
+                    print("Invalid deposit value. Please enter a numeric value...")
+                    balance = input("Enter initial Deposit: ")
+                    balance = balance.replace(",", ".")
+                    balance = float(balance)
+                    
+                while balance < 50:
+                    print("The minimum initial deposit for a deposit account is €50")
+                    balance = input("Enter initial Deposit: ")
+                    balance = balance.replace(",", ".")
+                    balance = float(balance)
+                    
         else:
-            account_type = self.account_type_menu()
-            if account_type == "deposit":
-                overdraft = "False"
-                while balance == False:
-                    try:
-                        balance = float(input("Initial Deposit: "))
-                    except:
-                        print("Invalid deposit value. Please enter a numeric value...")
-                    while balance < 50:
-                        print("The minimum initial deposit for a deposit account is €50")
-                        balance = float(input("Enter initial Deposit: "))
-            else:
+            overdraft = input("Overdraft (y/n): ").lower()
+            while (not (overdraft == "y" or overdraft == "n")): 
                 overdraft = input("Overdraft (y/n): ").lower()
-                while (not (overdraft == "y" or overdraft == "n")): 
-                    overdraft = input("Overdraft (y/n): ").lower()
-                if overdraft == "y":
-                    overdraft = "True"
-                else:
-                    overdraft = "False"
-                while balance == False:
-                    try:
-                        balance = float(input("Initial Deposit: "))
-                    except:
-                        print("Invalid deposit value. Please enter a numeric value...")
-                    while balance < 25:
-                        print("The minimum initial deposit for a deposit account is €25")
-                        balance = float(input("Enter initial Deposit: "))
+            if overdraft == "y":
+                overdraft = "True"
+            else:
+                overdraft = "False"
+            while balance == False:
+                try:
+                    balance = input("Enter initial Deposit: ")
+                    balance = balance.replace(",", ".")
+                    balance = float(balance)
 
-            customer_account = CustomerAccount(forename, surname, ppsn, account_type, overdraft, balance)
-            customer_account.update_interest_rate(customer_account, balance)
 
-            ds.add_customer(customer_account)
+                except:
+                    print("Invalid deposit value. Please enter a numeric value...")
+                    balance = input("Enter initial Deposit: ")
+                    balance = balance.replace(",", ".")
+                    balance = float(balance)
+                while balance < 25:
+                    print("The minimum initial deposit for a deposit account is €25")
+                    balance = input("Enter initial Deposit: ")
+                    balance = balance.replace(",", ".")
+                    balance = float(balance)
+                    
 
-            print("Return to continue...")
-            input()
+        customer_account = CustomerAccount(forename, surname, ppsn, account_type, overdraft, balance)
+        customer_account.update_interest_rate(customer_account, balance)
+
+        ds.add_customer(customer_account)
+        print(f"Account {customer_account.account_number} sucessefully created")
+        print("Return to continue...")
+        input()
 
     
-
     def validate_name(self, name):
         
         while (not name.replace(" ", "").isalpha()):
@@ -266,49 +335,73 @@ class UserMenu():
     def deposit_amount(self):
         
         try:
-            amount = float(input("Please, enter the amount you wish to deposit:\n"))
+            amount = input("Please, enter the amount you wish to deposit:\n")
+            amount = amount.replace(",", ".")
+            amount = float(amount)
         except ValueError:
-            amount = float(input('Please enter a number:\n'))
+            amount = input('Please enter a number:\n')
+            amount = amount.replace(",", ".")
+            amount = float(amount)
 
         while (not amount > 0):
             print('')
             print('The amount must be a number greater than 0\n')
             try:
-                amount = float(input("Enter a valid amount:\n"))
+                amount = input("Enter a valid amount:\n")
+                amount = amount.replace(",", ".")
+                amount = float(amount)
             except ValueError:
-                amount = float(input('Please enter a number:\n'))
+                amount = input('Please enter a number:\n')
+                amount = amount.replace(",", ".")
+                amount = float(amount)
         return amount
     
     def withdrawal_amount(self):
         
         try:
-            amount = float(input("Please, enter the amount you wish to withdrawal:\n"))
+            amount = input("Please, enter the amount you wish to withdrawal:\n")
+            amount = amount.replace(",", ".")
+            amount = float(amount)
         except ValueError:
-            amount = float(input('Please enter a number:\n'))
+            amount = input('Please enter a number:\n')
+            amount = amount.replace(",", ".")
+            amount = float(amount)
 
         while (not amount > 0):
             print('')
             print('The amount must be a number greater than 0\n')
             try:
-                amount = float(input("Enter a valid amount:\n"))
+                amount = input("Enter a valid amount:\n")
+                amount = amount.replace(",", ".")
+                amount = float(amount)
             except ValueError:
-                amount = float(input('Please enter a number:\n'))
+                amount = input('Please enter a number:\n')
+                amount = amount.replace(",", ".")
+                amount = float(amount)
         return amount
 
     def transfer_amount(self):
         
         try:
-            amount = float(input("Please, enter the amount to be transfered:\n"))
+            amount = input("Please, enter the amount to be transfered:\n")
+            amount = amount.replace(",", ".")
+            amount = float(amount)
         except ValueError:
-            amount = float(input('Please enter a number:\n'))
+            amount = input('Please enter a number:\n')
+            amount = amount.replace(",", ".")
+            amount = float(amount)
 
         while (not amount > 0):
             print('')
             print('The amount must be a number greater than 0\n')
             try:
-                amount = float(input("Enter a valid amount:\n"))
+                amount = input("Enter a valid amount:\n")
+                amount = amount.replace(",", ".")
+                amount = float(amount)
             except ValueError:
-                amount = float(input('Please enter a number:\n'))
+                amount = input('Please enter a number:\n')
+                amount = amount.replace(",", ".")
+                amount = float(amount)
         
         return amount
 
@@ -318,7 +411,7 @@ class UserMenu():
         customer_account.update_interest_rate(customer_account, amount)
         print(" ")
         print(f"Deposit of €{amount} in now added to account {customer_account.account_number} balance.")
-        print(f"New balance is: €{customer_account.balance}")
+        print(f"New balance is: €{round(customer_account.balance, 2)}")
         print("------------------------")
         input("Return to continue...")
         
@@ -326,27 +419,22 @@ class UserMenu():
     def withdrawal(self, customer_account, amount): 
           
         if customer_account.overdraft == True:
-            if amount <= 400.00:
-                customer_account.balance -= amount
-                customer_account.update_interest_rate(customer_account, amount)
-                print(" ")
-                print("Withdrawal authorized. You can release the money now")
-                print(f"New balance is: €{customer_account.balance}")
-                print("------------------------")
-                input("Return to continue...")
-            else:
-                print(" ")
-                print("Withdrawal off limits")
-                print("------------------------ ")
-                input("Return to continue...")
+            customer_account.balance -= amount
+            customer_account.update_interest_rate(customer_account, amount)
+            print(" ")
+            print("Withdrawal authorized. You can release the money now")
+            print(f"New balance is: €{round(customer_account.balance, 2)}")
+            print("------------------------")
+            input("Return to continue...")
+            
     
         else:
-            if amount <= customer_account.balance and amount <=400:
+            if amount <= customer_account.balance:
                 customer_account.balance -= amount
                 customer_account.update_interest_rate(customer_account, amount)
                 print(" ")
                 print("Withdrawal authorized. You can release the money now")
-                print(f"New balance is: €{customer_account.balance}")
+                print(f"New balance is: €{round(customer_account.balance, 2)}")
                 print("------------------------")
                 input("Return to continue...")
             
@@ -365,8 +453,8 @@ class UserMenu():
             account_to.update_interest_rate(account_to, amount)
             print(" ")
             print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
-            print(f"New balance for account {account_from.account_number}: €{account_from.balance}")
-            print(f"New balance for account {account_to.account_number}: €{account_to.balance}")
+            print(f"New balance for account {account_from.account_number}: €{round(account_from.balance, 2)}")
+            print(f"New balance for account {account_to.account_number}: €{round(account_to.balance, 2)}")
             print("------------------------")
             input("Return to continue...")
         else:
@@ -377,8 +465,8 @@ class UserMenu():
                 account_to.update_interest_rate(account_to, amount)
                 print(" ")
                 print(f"Transfer of {amount} from account {account_from.account_number} to {account_to.account_number} completed.")
-                print(f"New balance for account {account_from.account_number}: €{account_from.balance}")
-                print(f"New balance for account {account_to.account_number}: €{account_to.balance}")
+                print(f"New balance for account {account_from.account_number}: €{round(account_from.balance, 2)}")
+                print(f"New balance for account {account_to.account_number}: €{round(account_to.balance, 2)}")
                 print("------------------------")
                 input("Return to continue...")
             else:
@@ -387,6 +475,66 @@ class UserMenu():
                 print("------------------------ ")
                 input("Return to continue...")
 
+    def help(self):
+        self.clearscreen()
+        print("1.OPEN NEW Customer ACCOUNT in easy steps: ")
+        print("===================================")
+        print("   1. Enter the PPSN of the Customer.\n If The Customer already have accounts with The Green Bank forename and Surname will be automatically filled.")
+        print("   2. If this is the First account enter Forename and Surname")
+        print("   3. Choose account type")
+        print("   4. If it is a current account choose if the customer want to add the overdraft facility by typing 'Y' for yes or 'N' for no.")
+        print("   5. Enter the first deposit amount (minimum is 50 euros for Deposit account and 25 euros for current")
+        print("   6. Account Created!")
+        print("===================================")
+        print("")
+        print("2. DEPOSIT in easy steps: ")
+        print("===================================")
+        print("   1. Enter value that is going to be deposited into the account")
+        print("   2. Count the money carefully and Enter the number of the account to be credited")
+        print("   Deposit accepted!")
+        print("===================================")
+        print("")
+        print("3. WITHDRAWAL in easy steps: ")
+        print("===================================")
+        print("   1. Enter a value to withdraw")
+        print("   2. Enter the number of the account to be debited")
+        print("   3. Wait for the System to confirm if the withdrawal amount is in the limits for this account")
+        print("   4. If authorized count the money carefully before giving it to the customer")
+        print("   Transaction completed")
+        print("===================================")
+        print("")
+        print("4. VIEW all accounts in easy steps: ")
+        print("===================================")
+        print("   1. Just press 4 on the main menu")
+        print("   2. A list of all accounts will be displayed automatically")
+        print("===================================")
+        print("")
+        print("5.VIEW accounts by PPSN: ")
+        print("===================================")
+        print(" 1. Enter a valid PPSN number")
+        print(" The accounts connected to the PPSN will be listed")
+        print("===================================")
+        print("")
+        print("6. Transfer Bewtween Accounts ")
+        print("=====================================")
+        print("   1. Enter the AMOUNT to be transfered")
+        print("   2. Enter number of the account FROM where the funds will be DEBITED")
+        print("      If the amount is authorized:")
+        print("   3. Enter number of the account TO where the funds will be CREDITED")
+        print("      Transfer completed")
+        print("===================================")
+        print("")
+        print("7. Online help")
+        print("===================================")
+        print("   From the main menu you can always choose 7 to reviews this online guide")
+        print("===================================")
+        print("8. Exit")
+        print("===================================")
+        print("   From the main menu you can always choose 8 to save changes and close the system")
+        print("===================================")
+        print("")
+        input("Return to continue...")
+        
 
 
 
