@@ -180,15 +180,15 @@ class UserMenu():
         print("================")
         print("1. Deposit:\n Overdraft facility not available for this type of account. Opening deposit must be €50 or more.\n Type 1 to choose this type of account\n")
         print("2. Current:\n Overdraft facility is available for this type of account. Opening deposit must be €25 or more.\n Type 2 to choose this type of account\n")
-        selection = int(input("Please choose an option (1 or 2): "))
-        while(not (selection == 1 or selection == 2)):
-            selection = int(input("Please choose an option (1 or 2): "))
-        if selection == 1:
+        selection = ("Please choose an option (1 or 2): ")
+        while(not (selection == "1" or selection == "2")):
+            selection = input("Please choose an option (1 or 2): ")
+        if selection == "1":
             print("")
             print("Deposit account selected. You must now deposit a minimum of €50")
             print("")
             return "deposit"
-        if selection == 2:
+        if selection == "2":
             print("")
             print("Current account selected.")
             return "current"
@@ -218,61 +218,61 @@ class UserMenu():
                 forename = ppsn_found[0].forename
                 surname = ppsn_found[0].surname           
 
-        account_type = self.account_type_menu()
-        if account_type == "deposit":
-            overdraft = "False"
-            while balance == False:
-                try:
-                    balance = input("Enter initial Deposit: ")
-                    balance = balance.replace(",", ".")
-                    balance = float(balance)
-                    
-                except:
-                    print("Invalid deposit value. Please enter a numeric value...")
-                    balance = input("Enter initial Deposit: ")
-                    balance = balance.replace(",", ".")
-                    balance = float(balance)
-                    
-                while balance < 50:
-                    print("The minimum initial deposit for a deposit account is €50")
-                    balance = input("Enter initial Deposit: ")
-                    balance = balance.replace(",", ".")
-                    balance = float(balance)
-                    
-        else:
-            overdraft = input("Overdraft (y/n): ").lower()
-            while (not (overdraft == "y" or overdraft == "n")): 
-                overdraft = input("Overdraft (y/n): ").lower()
-            if overdraft == "y":
-                overdraft = "True"
-            else:
+            account_type = self.account_type_menu()
+            if account_type == "deposit":
                 overdraft = "False"
-            while balance == False:
-                try:
-                    balance = input("Enter initial Deposit: ")
-                    balance = balance.replace(",", ".")
-                    balance = float(balance)
+                while balance == False:
+                    try:
+                        balance = input("Enter initial Deposit: ")
+                        balance = balance.replace(",", ".")
+                        balance = float(balance)
+                        
+                    except:
+                        print("Invalid deposit value. Please enter a numeric value...")
+                        balance = input("Enter initial Deposit: ")
+                        balance = balance.replace(",", ".")
+                        balance = float(balance)
+                        
+                    while balance < 50:
+                        print("The minimum initial deposit for a deposit account is €50")
+                        balance = input("Enter initial Deposit: ")
+                        balance = balance.replace(",", ".")
+                        balance = float(balance)
+                        
+            else:
+                overdraft = input("Overdraft (y/n): ").lower()
+                while (not (overdraft == "y" or overdraft == "n")): 
+                    overdraft = input("Overdraft (y/n): ").lower()
+                if overdraft == "y":
+                    overdraft = "True"
+                else:
+                    overdraft = "False"
+                while balance == False:
+                    try:
+                        balance = input("Enter initial Deposit: ")
+                        balance = balance.replace(",", ".")
+                        balance = float(balance)
 
 
-                except:
-                    print("Invalid deposit value. Please enter a numeric value...")
-                    balance = input("Enter initial Deposit: ")
-                    balance = balance.replace(",", ".")
-                    balance = float(balance)
-                while balance < 25:
-                    print("The minimum initial deposit for a deposit account is €25")
-                    balance = input("Enter initial Deposit: ")
-                    balance = balance.replace(",", ".")
-                    balance = float(balance)
-                    
+                    except:
+                        print("Invalid deposit value. Please enter a numeric value...")
+                        balance = input("Enter initial Deposit: ")
+                        balance = balance.replace(",", ".")
+                        balance = float(balance)
+                    while balance < 25:
+                        print("The minimum initial deposit for a deposit account is €25")
+                        balance = input("Enter initial Deposit: ")
+                        balance = balance.replace(",", ".")
+                        balance = float(balance)
+                        
 
-        customer_account = CustomerAccount(forename, surname, ppsn, account_type, overdraft, balance)
-        customer_account.update_interest_rate(customer_account, balance)
+            customer_account = CustomerAccount(forename, surname, ppsn, account_type, overdraft, balance)
+            customer_account.update_interest_rate(customer_account, balance)
 
-        ds.add_customer(customer_account)
-        print(f"Account {customer_account.account_number} sucessfully created")
-        print("Return to continue...")
-        input()
+            ds.add_customer(customer_account)
+            print(f"Account {customer_account.account_number} sucessfully created")
+            print("Return to continue...")
+            input()
 
     
     def validate_name(self, name):
@@ -313,6 +313,7 @@ class UserMenu():
             return ppsn 
         else:
             ppsn = "Entered PPSN is not valid"
+            print('PPSN must contain 7 numeric charachters, and 1 or 2 check characters (letters) in the end. Ex.: 1234567wa')
             return ppsn
     
 

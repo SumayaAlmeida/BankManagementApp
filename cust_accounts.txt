@@ -9,3 +9,4 @@ Marly|Santos|3456789po|current|True|12000.00
 Test|User|1234567qq|current|True|15000.45
 Test|User|1234567qq|deposit|False|50.00
 Test|User|1234567qq|deposit|False|150.00
+New|User|1234765MM|current|True|1250.00
